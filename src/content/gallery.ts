@@ -60,4 +60,53 @@ export const galleryImages: GalleryImage[] = [
   image(`${uploads}/2018/06/20180419_140754-min.jpg`, "Spring flowers and trimmed shrubs in the garden", 4128, 2322),
   image(`${uploads}/2018/06/20180428_143757-min.jpg`, "Vivid red flowers beside a sculpted green shrub", 4128, 2322),
   image(`${uploads}/2017/09/Leaning-Oak-Ranch-Mackenzie-Photography-01-min.jpg`, "Wood ceremony chairs facing the garden altar", 400, 267),
+  image(`${uploads}/2017/09/Untitled-design-11.jpg`, "Flower-filled reception table beside the gazebo fireplace", 802, 535),
 ];
+
+// Preserve the live venue page's complete collection and its display order.
+// Reuse the shared photo records so descriptions and dimensions stay consistent.
+const venueFilenames = [
+  "Leaning-Oak-Ranch-Makenzie-Photography-06-min.jpg",
+  "Leaning-Oak-Ranch-Makenzie-Photography-07-min.jpg",
+  "Leaning-Oak-Ranch-Makenzie-Photography-08-min.jpg",
+  "Leaning-Oak-Ranch-Yard-2-min.jpg",
+  "Leaning-Oak-Ranch-10-min.jpg",
+  "Leaning-Oak-Ranch-Yard-5-min.jpg",
+  "Leaning-Oak-Ranch-Yard-4-min.jpg",
+  "Leaning-Oak-Ranch-Yard-20-min.jpg",
+  "Leaning-Oak-Ranch-Yard-11-min.jpg",
+  "Leaning-Oak-Ranch-Yard-min.jpg",
+  "Leaning-Oak-Ranch-Yard-16-min.jpg",
+  "Leaning-Oak-Ranch-Yard-9-min.jpg",
+  "Leaning-Oak-Ranch-Yard-7-min.jpg",
+  "Leaning-Oak-Ranch-Yard-19-min.jpg",
+  "Leaning-Oak-Ranch-Yard-18-min.jpg",
+  "Leaning-Oak-Ranch-Yard-10-min.jpg",
+  "Leaning-Oak-Ranch-Yard-17-min.jpg",
+  "Leaning-Oak-Ranch-Yard-13-min.jpg",
+  "Leaning-Oak-Ranch-9-min.jpg",
+  "Leaning-Oak-Ranch-Yard-12-min.jpg",
+  "Leaning-Oak-Ranch-Yard-14-min.jpg",
+  "Leaning-Oak-Ranch-Yard-15-min.jpg",
+  "Leaning-Oak-Ranch-Yard-8-min.jpg",
+  "Leaning-Oak-Ranch-Yard-6-min.jpg",
+  "Leaning-Oak-Ranch-11-min.jpg",
+  "Leaning-Oak-Ranch-8-min.jpg",
+  "Leaning-Oak-Ranch-7-min.jpg",
+  "Leaning-Oak-Ranch-5-min.jpg",
+  "Leaning-Oak-Ranch-4-min.jpg",
+  "Leaning-Oak-Ranch-3-min.jpg",
+  "Leaning-Oak-Ranch-2-min.jpg",
+  "Leaning-Oak-Ranch-1-min.jpg",
+  "Leaning-Oak-Ranch-15-min.jpg",
+  "Leaning-Oak-Ranch-14-min.jpg",
+  "Webp.net-resizeimage-4-min.jpg",
+  "Untitled-design-3-2.jpg",
+  "Untitled-design-11.jpg",
+];
+
+export const venueGalleryImages: GalleryImage[] = venueFilenames.map((filename) => {
+  const photo = galleryImages.find(({ src }) => src === `${uploads}/2017/09/${filename}`);
+  if (!photo) throw new Error(`Missing venue gallery photo: ${filename}`);
+  return photo;
+});

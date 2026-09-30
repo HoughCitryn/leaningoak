@@ -4,7 +4,7 @@ import { extname, join, relative, resolve } from "node:path";
 const root = resolve(import.meta.dirname, "..");
 const sourceRoot = join(root, "src");
 const publicRoot = join(root, "public");
-const allowedRoutes = new Set(["/", "/the-venue/", "/information/", "/photo-gallery/", "/contact-us/", "/privacy-practices/", "/api/inquiry", "/sitemap.xml", "/image-sitemap.xml"]);
+const allowedRoutes = new Set(["/", "/the-venue/", "/information/", "/photo-gallery/", "/contact-us/", "/privacy-practices/", "/api/inquiry/", "/sitemap.xml", "/image-sitemap.xml"]);
 const errors = [];
 
 function files(dir) {

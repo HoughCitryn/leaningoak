@@ -21,11 +21,11 @@ export default function ContactPage() {
           <p className="eyebrow green">Contact Us</p>
           <h2>Let’s Talk About Your Event</h2>
           <p>Ask about available dates, package details, or schedule a private tour of the ranch.</p>
-          <address>
-            <div><MapPin size={26} weight="light" aria-hidden="true" /><span>{siteConfig.address.streetAddress}<br />{siteConfig.address.addressLocality}, {siteConfig.address.addressRegion} {siteConfig.address.postalCode}</span></div>
-            <div><Envelope size={26} weight="light" aria-hidden="true" /><TrackedLink href={`mailto:${siteConfig.email}`} event="click_email">{siteConfig.email}</TrackedLink></div>
-            <div><Phone size={26} weight="light" aria-hidden="true" /><TrackedLink href={`tel:${siteConfig.phoneHref}`} event="click_to_call">{siteConfig.phoneDisplay}</TrackedLink></div>
-          </address>
+          <div className="contact-methods">
+            <section><MapPin size={26} weight="light" aria-hidden="true" /><div><h3>Venue Location</h3><address>{siteConfig.address.streetAddress}<br />{siteConfig.address.addressLocality}, {siteConfig.address.addressRegion} {siteConfig.address.postalCode}</address></div></section>
+            <section><Envelope size={26} weight="light" aria-hidden="true" /><div><h3>Email Us</h3><TrackedLink href={`mailto:${siteConfig.email}`} event="click_email">{siteConfig.email}</TrackedLink></div></section>
+            <section><Phone size={26} weight="light" aria-hidden="true" /><div><h3>Call Us</h3><TrackedLink href={`tel:${siteConfig.phoneHref}`} event="click_to_call">{siteConfig.phoneDisplay}</TrackedLink></div></section>
+          </div>
         </div>
         <div className="form-panel"><h2>Event Inquiry</h2><InquiryForm /></div>
       </section>

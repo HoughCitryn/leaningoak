@@ -45,7 +45,7 @@ export default function InformationPage() {
       <section className="faq-section section-shell">
         <div className="section-heading"><p className="eyebrow green">Before You Book</p><h2>Frequently Asked Questions</h2></div>
         <div className="faq-list">
-          {packageContent.faq.map((item) => <details key={item.question}><summary>{item.question}</summary><p>{item.answer}</p></details>)}
+          {packageContent.faq.map((item) => <details key={item.question}><summary><h3>{item.question}</h3></summary><p>{item.answer}</p></details>)}
         </div>
       </section>
 

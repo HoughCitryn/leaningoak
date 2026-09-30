@@ -1,4 +1,4 @@
-import { galleryImages } from "@/content/gallery";
+import { galleryImages, venueGalleryImages } from "@/content/gallery";
 import { siteConfig } from "@/content/site";
 
 const routeImages = [
@@ -16,8 +16,9 @@ const routeImages = [
     loc: `${siteConfig.url}/the-venue/`,
     images: [
       "/wp-content/uploads/2017/09/Untitled-design-19-min.jpg",
-      "/wp-content/uploads/2017/09/Untitled-design-2-1.jpg",
-      "/wp-content/uploads/2017/09/Untitled-design-9.jpg",
+      ...venueGalleryImages.map((image) => image.src),
+      "/wp-content/uploads/2017/09/Leaning-Oak-Ranch-Makenzie-Photography-05-min.jpg",
+      "/wp-content/uploads/2017/09/Leaning-Oak-Ranch-Makenzie-Photography-02-min.jpg",
     ],
   },
   {
@@ -26,11 +27,15 @@ const routeImages = [
   },
   {
     loc: `${siteConfig.url}/photo-gallery/`,
-    images: galleryImages.map((image) => image.src),
+    images: ["/wp-content/uploads/2017/09/Untitled-design-20-min.jpg", ...galleryImages.map((image) => image.src)],
   },
   {
     loc: `${siteConfig.url}/contact-us/`,
     images: ["/wp-content/uploads/2017/09/Untitled-design-8.jpg"],
+  },
+  {
+    loc: `${siteConfig.url}/privacy-practices/`,
+    images: ["/wp-content/uploads/2017/09/Untitled-design-3.jpg"],
   },
 ];
 

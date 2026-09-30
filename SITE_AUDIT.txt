@@ -1,0 +1,202 @@
+Leaning Oak Ranch: live-site comparison and SEO audit
+Audit date: September 30, 2026
+Live source: https://www.leaningoakranch.com/
+
+RESULT
+
+The goal is to preserve the live site's current information and improve its
+presentation, accessibility, SEO, and contact workflow. Pixel-for-pixel duplication
+is not required. All six current pages are retained, both original gallery
+collections are complete, and all nine live sitemap URLs now have a relevant
+destination. The user chose to consolidate obsolete pages through redirects.
+Outdated package terms and 2017-2018 calendar images are intentionally not
+presented as current information. Nothing was deployed to the live site.
+
+SCOPE AND METHOD
+
+Read the live robots file and sitemap index, then fetched every one of the nine
+page URLs in the live page sitemap. Compared HTML, headings, metadata, links,
+image inventories, and form markup against the local source and production
+HTML. Tested the local production server's page and metadata endpoints,
+redirects, 404 response, and invalid inquiry response.
+
+Live inventory: https://www.leaningoakranch.com/page-sitemap.xml
+Live robots: https://www.leaningoakranch.com/robots.txt
+
+No connected browser was available. This is a source/content/HTTP audit, not a
+desktop/mobile screenshot comparison. Pixel alignment, interactive behavior
+in a real browser, Lighthouse scores, and field Core Web Vitals remain unverified.
+All live image counts below are deduplicated because the WordPress HTML contains
+separate responsive copies of some sections.
+
+PAGE-BY-PAGE COMPARISON
+
+1. Home: https://www.leaningoakranch.com/
+   Live 200; local 200. Current content retained in an improved presentation.
+   The principal H1 and introductory subject matter are retained. The local
+   page adds hero tour/package links, introductory labels, a rewritten service
+   presentation, package explanatory text, and a final tour section. The live
+   "See The Venue" link points to /photo-gallery/; the local link points to
+   /the-venue/. The local image selection and custom CSS composition differ
+   from the WordPress sections. Desktop/mobile duplicate markup was removed.
+
+2. The Venue: https://www.leaningoakranch.com/the-venue/
+   Live 200; local 200. Venue content and original photography retained.
+   The primary headline and weddings/events subjects are retained, with edited
+   prose. All 37 unique live venue-gallery photos are now included locally in
+   their original order. Six photos appear initially; the native expandable
+   gallery reveals the remaining 31. All 37 are present in the server-rendered
+   HTML and can be viewed in the keyboard-accessible lightbox. The original
+   Makenzie Photography 05 and 02 weddings/events feature photos were restored.
+   The image sitemap uses the same complete venue collection.
+
+3. Packages (current): https://www.leaningoakranch.com/information/
+   Live 200; local 200. Substantive package details match; presentation is different.
+   Verified both published price tiers ($6,500 for 0-99 guests and $8,000 for
+   100-150), 8 included services, 10 decor entries, 9 add-ons, the price notices,
+   and all 12 FAQ topics. Local copy has wording/punctuation changes and a new
+   pricing-panel layout. Local FAQs use collapsible details elements, whereas
+   live answers are ordinary page content. FAQ headings are now H3 under H2.
+   This is a comparison of published terms, not a confirmation of future pricing.
+
+4. Photo Gallery: https://www.leaningoakranch.com/photo-gallery/
+   Live 200; local 200. Complete original photo collection retained.
+   All 49 unique live gallery images are present locally in the same first-49
+   order. The local gallery has 51 photos: the 49 live gallery photos plus
+   Leaning-Oak-Ranch-Mackenzie-Photography-01-min.jpg and the venue's
+   Untitled-design-11.jpg. It also has a new hero description, custom grid and
+   lightbox implementation, and the section headings/visit link added by this
+   audit. The live main content has no actual H1/H2/H3 tags; the rebuild does.
+
+5. Contact Us: https://www.leaningoakranch.com/contact-us/
+   Live 200; local 200. Contact details retained and inquiry workflow expanded.
+   The address, phone, and email match. The fetched live page contains contact
+   information and no HTML form. The local page adds a hero, event inquiry form,
+   Turnstile integration, and different copy/layout. The form collects event
+   details as well as contact details, so it is not a copy of the legacy form.
+   The live contact page lacks a meta description and an H1; local has both.
+
+6. Privacy Practices: https://www.leaningoakranch.com/privacy-practices/
+   Live 200; local 200. Subject matter retained; markup/layout is different.
+   The 12 privacy/CCPA sections are represented locally, with paragraph/list
+   regrouping and a new photo hero. The live content uses styled text instead
+   of semantic headings. Local now has H1, H2, and CCPA subsection H3 headings.
+   This audit changed heading markup only; it did not rewrite the policy terms.
+   The live page has no meta description; the local page has its own description.
+
+7. Packages (legacy): https://www.leaningoakranch.com/packages/
+   Live 200; local 308 redirect to /information/. Consolidated as requested.
+   The live URL still appears in its sitemap and contains an older package
+   presentation with 50/100/150 guest bands and a $1,500 retainer. This conflicts
+   with the $1,000 deposit on the current /information/ page. The pre-existing
+   local redirect consolidates it into the current package page. It was kept
+   per the user's choice to use current information instead of an archive.
+
+8. Calendar: https://www.leaningoakranch.com/calendar/
+   Live 200; local 308 redirect to /contact-us/. Consolidated as requested.
+   The live page displays calendar image assets named Sep17.png through Aug18.png,
+   rather than a current availability feed. The existing local redirect was kept
+   so visitors can ask the venue about a date instead of seeing obsolete dates.
+
+9. Legacy form: https://www.leaningoakranch.com/30160-2/
+   Live 200; local 308 redirect to /contact-us/. Contact destination preserved.
+   The live sitemap includes this page, which has a basic name/email/message
+   form. The previous local 410 Gone response was replaced with a permanent
+   redirect to the improved contact page, preserving a useful destination for
+   old links and visitors. The current form includes name, email, and message
+   plus phone and event details.
+
+SHARED DIFFERENCES
+
+The local header, footer, consent UI, button styling, spacing, responsive CSS,
+and Next.js image handling differ from the WordPress/Divi implementation.
+Navigation destinations for the five main pages and the business contact
+details are retained. Metadata and structured data were intentionally improved
+in the rebuild and should not be copied back from weaker live metadata simply
+to achieve a source-code match.
+
+SEO STATUS AFTER CHANGES
+
+All six indexable local pages have unique titles and descriptions, one H1 in
+main content, H2/H3 headings without skipped levels, self-referencing HTTPS/www
+canonical URLs, matching Open Graph metadata, Twitter sharing metadata, and
+parseable JSON-LD. Image alt attributes are present, and referenced image files
+exist. Empty alt text is retained on decorative images. Structured-data syntax
+was checked; Google rich-result eligibility was not certified.
+
+Main-content headings (footer headings excluded):
+Page                    H1   H2   H3
+/                        1    4    3
+/the-venue/              1    5    1
+/information/            1    4   13
+/photo-gallery/          1    1    1
+/contact-us/             1    2    3
+/privacy-practices/      1    8    4
+
+Heading levels describe actual sections/subsections; adding heading counts
+alone is not a ranking guarantee. The H3 requirement here follows this project
+request, not a universal search-engine requirement.
+
+Existing sitemap.ts and robots.ts were already present. Their served responses
+were verified at /sitemap.xml and /robots.txt with HTTP 200 and appropriate
+content types. The sitemap now derives its six URLs from the shared SEO data.
+The three legacy redirects are excluded from this indexable inventory.
+Robots permits public-page crawling, excludes /api/, and declares both sitemaps.
+The existing image sitemap was expanded to include all six page routes and the
+complete venue/gallery collections, feature photos, and gallery/privacy heroes.
+
+Also verified:
+- /image-sitemap.xml serves valid XML and all referenced media files exist.
+- Legacy WordPress sitemap endpoints redirect permanently to /sitemap.xml.
+- Non-www or HTTP production-host requests redirect to HTTPS/www.
+- Missing pages return HTTP 404 with noindex.
+- The Open Graph image endpoint returns an image successfully.
+- The unwanted Vercel starter favicon was removed. The existing ranch icon is
+  retained, and /favicon.ico redirects to that same branded asset.
+- Home and venue descriptions were shortened to avoid unnecessarily long copy.
+
+CONTACT EMAIL CONFIGURATION
+
+.env.example now documents SMTP_HOST, SMTP_PORT, SMTP_SECURE, SMTP_USER,
+SMTP_PASS, SMTP_FROM_EMAIL, and CONTACT_TO_EMAIL. Copy it to .env.local and
+provide your email provider's values. No real SMTP credentials were added.
+
+The contact endpoint now supports SMTP through Nodemailer. A configured host
+selects SMTP; a blank SMTP_HOST retains the existing Resend option. STARTTLS
+is required for non-implicit-TLS SMTP connections. The visitor is Reply-To,
+and the destination is configured server-side. Invalid configuration or rejected
+delivery returns an error, not a success message. Timeouts bound external calls.
+
+Both Turnstile keys must also be set. Public variables must be set before the
+production build. Without the public key, the form remains disabled and offers
+phone/email contact instead of showing implementation instructions to visitors.
+No real email was sent and no CAPTCHA was completed during verification.
+
+VALIDATION
+
+pnpm verify checks ESLint, TypeScript, 24 inquiry tests, the production build,
+84 archived media assets, internal links, and the production-HTML SEO audit.
+The added command pnpm check:seo can be rerun after any production build.
+SMTP tests mock the mail provider; actual delivery still requires configured
+credentials and an end-to-end delivery check in the deployment environment.
+
+REMAINING FOLLOW-UP
+
+The original live gallery collections and current primary-page information are
+retained. Legacy pages are intentionally consolidated as selected by the user;
+outdated package terms and historical availability images are not copied into
+current offers. Text is edited for clarity rather than reproduced verbatim.
+Layout differences are expected improvements, not content-migration failures.
+
+Measure performance in a real browser before launch. In particular, large CSS
+hero background images are not automatically optimized by next/image. This
+audit does not establish a Lighthouse or Core Web Vitals score.
+
+After deployment, verify the public-domain responses again and submit the
+sitemap in the site's Search Console account. Indexing, backlinks, search
+rankings, and account-level Search Console configuration were not inspected.
+
+Reference guidance:
+https://developers.google.com/search/docs/fundamentals/seo-starter-guide
+https://developers.google.com/search/docs/appearance/title-link
+https://nodemailer.com/smtp

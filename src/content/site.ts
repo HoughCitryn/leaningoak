@@ -31,13 +31,13 @@ export const seo: Record<string, PageSeo> = {
     path: "/",
     title: "Leaning Oak Ranch | Wedding Venue in Bakersfield, CA",
     description:
-      "Leaning Oak Ranch is an outdoor wedding and event venue in Bakersfield, CA with year-round views, a grand gazebo, outdoor bar, bridal suite, and space for up to 150 guests.",
+      "Leaning Oak Ranch is an outdoor wedding and event venue in Bakersfield, CA, with landscaped gardens, a gazebo, outdoor bar, and room for 150 guests.",
   },
   venue: {
     path: "/the-venue/",
     title: "Outdoor Wedding Venue in Bakersfield, CA | Leaning Oak Ranch",
     description:
-      "Explore Leaning Oak Ranch, a private outdoor wedding and event venue in Bakersfield with landscaped grounds, a grand gazebo, outdoor bar, and space for up to 150 guests.",
+      "Explore Leaning Oak Ranch in Bakersfield, CA: landscaped gardens, a grand gazebo, an outdoor bar, a private bridal suite, and space for up to 150 guests.",
   },
   information: {
     path: "/information/",

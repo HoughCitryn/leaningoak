@@ -6,11 +6,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { GalleryImage } from "@/content/types";
 import { trackEvent } from "@/lib/analytics";
 
-export function GalleryLightbox({ images }: { images: GalleryImage[] }) {
+export function GalleryLightbox({ images, previewCount = images.length }: { images: GalleryImage[]; previewCount?: number }) {
   const [active, setActive] = useState<number | null>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const previousFocus = useRef<HTMLElement | null>(null);
+  const initialCount = Math.max(1, Math.min(previewCount, images.length));
 
   function open(index: number) {
     previousFocus.current = document.activeElement as HTMLElement;
@@ -56,21 +57,37 @@ export function GalleryLightbox({ images }: { images: GalleryImage[] }) {
     };
   }, [active, close, move]);
 
+  function renderTile(item: GalleryImage, index: number) {
+    return (
+      <button key={item.src} type="button" className="gallery-tile" onClick={() => open(index)} aria-label={`Open image: ${item.alt}`}>
+        <Image
+          src={item.src}
+          alt={item.alt}
+          width={item.width}
+          height={item.height}
+          sizes="(max-width: 767px) 100vw, (max-width: 980px) 50vw, 33vw"
+        />
+      </button>
+    );
+  }
+
   return (
     <>
       <div className="gallery-grid">
-        {images.map((item, index) => (
-          <button key={item.src} type="button" className="gallery-tile" onClick={() => open(index)} aria-label={`Open image: ${item.alt}`}>
-            <Image
-              src={item.src}
-              alt={item.alt}
-              width={item.width}
-              height={item.height}
-              sizes="(max-width: 767px) 100vw, (max-width: 980px) 50vw, 33vw"
-            />
-          </button>
-        ))}
+        {images.slice(0, initialCount).map(renderTile)}
       </div>
+
+      {initialCount < images.length ? (
+        <details className="gallery-more">
+          <summary className="button button-outline">
+            <span className="gallery-expand-label">View All {images.length} Photos</span>
+            <span className="gallery-collapse-label">Show Fewer Photos</span>
+          </summary>
+          <div className="gallery-grid">
+            {images.slice(initialCount).map((item, index) => renderTile(item, initialCount + index))}
+          </div>
+        </details>
+      ) : null}
 
       {active !== null ? (
         <div ref={dialogRef} className="lightbox" role="dialog" aria-modal="true" aria-label="Photo gallery viewer" onMouseDown={(event) => { if (event.target === event.currentTarget) close(); }}>

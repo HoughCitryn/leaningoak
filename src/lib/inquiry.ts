@@ -29,7 +29,7 @@ export const inquirySchema = z.object({
   website: optionalText,
 });
 
-type InquiryPayload = z.infer<typeof inquirySchema>;
+export type InquiryPayload = z.infer<typeof inquirySchema>;
 
 export type InquiryDependencies = {
   verifyTurnstile: (token: string, remoteIp?: string) => Promise<boolean>;

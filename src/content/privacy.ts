@@ -1,5 +1,6 @@
 export type PrivacySection = {
   heading: string;
+  level?: 2 | 3;
   paragraphs?: string[];
   items?: string[];
 };
@@ -74,6 +75,7 @@ export const privacySections: PrivacySection[] = [
   },
   {
     heading: "Collection, Use, And Disclosure of Personal Information",
+    level: 3,
     paragraphs: [
       "Our Privacy Practices above contains a definition of “personal information.” More specifically, “personal information” is information that identifies, relates to, describes, is reasonably capable of being associated with, or could reasonably be linked, directly or indirectly, with a natural person or household, such as a name, postal address, e-mail address, and/or telephone number. Other information directly associated with personal information also may be considered to be personal information. Information that is aggregated, de-identified, or anonymized is not considered personal information. Publicly available information that is made available from federal, state, or local government records also is not considered personal information.",
       "Our Privacy Practices includes the categories of personal information we collect, how we collect personal information, the purposes for which your personal information is used, and the categories of third parties with whom we share your personal information. We do not sell your personal information to third parties. We use cookies in certain circumstances; for further information on our use of cookies, please review our Cookie Statement above.",
@@ -81,6 +83,7 @@ export const privacySections: PrivacySection[] = [
   },
   {
     heading: "Your Rights Under The CCPA",
+    level: 3,
     paragraphs: [
       "The CCPA, California Civil Code Sections 1798.100 et seq., affords certain rights to you if you are a California resident. For example, California residents may have a right, following a verifiable request, to:",
       "(1) access—twice in a 12-month period, free of charge—the categories and/or specific pieces of personal information we have collected about you, the categories of sources from which the personal information is collected, the business purpose for collecting the personal information, and the categories of third parties with whom we share personal information, for the 12-month period prior to the request; and",
@@ -94,12 +97,14 @@ export const privacySections: PrivacySection[] = [
   },
   {
     heading: "Information Security, Integrity, And Retention",
+    level: 3,
     paragraphs: [
       "We take reasonable precautions, including the use of physical, electronic, and procedural safeguards, to protect your information. It is important that you also take precautions to protect against unauthorized access to your computers or other devices. If you feel that the security of your personal information has been compromised, please immediately contact us. Please be aware that, despite our efforts, no security system is impenetrable. In the event of a security breach, we will promptly notify you and the proper authorities, if required by law.",
     ],
   },
   {
     heading: "Changes To This CCPA Notice",
+    level: 3,
     paragraphs: [
       "We may periodically change this CCPA Notice to keep pace with new industry practices and regulatory requirements, among other reasons. We expect most such changes to be minor. Any non-material changes will take effect immediately upon posting of an updated CCPA Notice, and we will indicate the Last Modified date at the bottom of this document. There may, however, be cases where changes to the CCPA Notice may be more significant. In such cases, we will provide you with a prominent notice of such changes before they take effect or will directly send you a notification.",
       "Your continued use of our services after the effective date of the CCPA Notice means that you accept the revised CCPA Notice. If you do not agree to the revised CCPA Notice, please refrain from using our website or services.",

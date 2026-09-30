@@ -16,7 +16,7 @@ export default function PrivacyPage() {
         <p>{privacyIntro}</p>
         {privacySections.map((section) => (
           <section key={section.heading}>
-            <h2>{section.heading}</h2>
+            {section.level === 3 ? <h3>{section.heading}</h3> : <h2>{section.heading}</h2>}
             {section.paragraphs?.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
             {section.items ? <ul>{section.items.map((item) => <li key={item}>{item}</li>)}</ul> : null}
           </section>

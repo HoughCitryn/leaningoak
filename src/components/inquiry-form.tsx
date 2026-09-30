@@ -39,7 +39,7 @@ export function InquiryForm() {
     };
 
     try {
-      const response = await fetch("/api/inquiry", {
+      const response = await fetch("/api/inquiry/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -95,7 +95,7 @@ export function InquiryForm() {
         {siteKey ? (
           <div className="cf-turnstile" data-sitekey={siteKey} data-theme="light" />
         ) : (
-          <p className="form-setup-note">Security verification will be enabled when production keys are configured.</p>
+          <p className="form-setup-note">Online inquiries are temporarily unavailable. Please call <a href="tel:+16613455102">661-345-5102</a> or email <a href="mailto:barbara@leaningoakranch.com">barbara@leaningoakranch.com</a>.</p>
         )}
         {errors.turnstileToken?.[0] ? <small role="alert">{errors.turnstileToken[0]}</small> : null}
 

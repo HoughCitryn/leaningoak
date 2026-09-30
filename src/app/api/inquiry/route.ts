@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { Resend } from "resend";
 import { processInquiry, type InquiryDependencies } from "@/lib/inquiry";
+import { deliverInquiry } from "@/lib/inquiry-email";
 
-const recipient = "barbara@leaningoakranch.com";
+export const runtime = "nodejs";
 
-export function createInquiryDependencies(): InquiryDependencies {
+function createInquiryDependencies(): InquiryDependencies {
   return {
     async verifyTurnstile(token, remoteIp) {
       const secret = process.env.TURNSTILE_SECRET_KEY;
@@ -16,36 +16,13 @@ export function createInquiryDependencies(): InquiryDependencies {
         method: "POST",
         body,
         cache: "no-store",
+        signal: AbortSignal.timeout(10_000),
       });
       if (!response.ok) return false;
       const result = (await response.json()) as { success?: boolean };
       return result.success === true;
     },
-    async deliver(payload) {
-      const apiKey = process.env.RESEND_API_KEY;
-      const from = process.env.RESEND_FROM_EMAIL;
-      if (!apiKey || !from) return false;
-
-      const resend = new Resend(apiKey);
-      const { error } = await resend.emails.send({
-        from,
-        to: recipient,
-        replyTo: payload.email,
-        subject: `New ${payload.eventType} inquiry from ${payload.name}`,
-        text: [
-          `Name: ${payload.name}`,
-          `Email: ${payload.email}`,
-          `Phone: ${payload.phone}`,
-          `Event type: ${payload.eventType}`,
-          `Preferred date: ${payload.preferredDate ?? "Not provided"}`,
-          `Guest count: ${payload.guestCount ?? "Not provided"}`,
-          "",
-          "Message:",
-          payload.message,
-        ].join("\n"),
-      });
-      return !error;
-    },
+    deliver: deliverInquiry,
   };
 }
 
