@@ -45,6 +45,8 @@ pnpm check:launch --email
 
 `--smtp` remains an alias for checking the configured transport. In API mode it does not attempt an SMTP-password login. An authentication check does not prove inbox delivery; perform an authorized end-to-end delivery test before launch. The configured API key, active channel, and enabled `citryn.com` sender domain were verified on October 26, 2026.
 
+On October 26, 2026, one authorized test inquiry was sent through the production-built `/api/inquiry/` endpoint to `ghough@citryn.com`. The endpoint returned HTTP 200 with `status: success` only after SMTP.com returned a valid acceptance ID. The isolated local test server used Cloudflare's public test secret and a temporary recipient override; the saved production Turnstile secret and Barbara's recipient address were preserved. Inbox receipt was not independently confirmed. The test server was then stopped. These code changes and the four API/contact environment variables must be deployed together.
+
 ## Google Analytics and Search Console
 
 The rebuild reuses the existing **Leaning Oak Ranch – GA4** property. No new Analytics account or property was created.
