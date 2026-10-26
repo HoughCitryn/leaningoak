@@ -124,3 +124,19 @@ The application redirects the apex domain and HTTP requests to the canonical HTT
 After cutover, complete a real Turnstile challenge, verify an authorized inquiry reaches the intended inbox, accept analytics cookies and check GA4 Realtime, and confirm Search Console can fetch `/sitemap.xml` and `/image-sitemap.xml`.
 
 Pre-deployment audit on October 26, 2026 passed from a fresh temporary copy with no existing dependencies or Next.js build output: frozen-lockfile installation, all 52 tests, TypeScript, ESLint without warnings, production build, internal links, 84 archived media files, and the six-page SEO audit. The running production server also passed page/resource, sitemap/image, legacy redirect, canonical host, 404, and inquiry-validation checks; its built inquiry limit is 30 seconds. SMTP.com authentication and sender-domain checks passed; the real Turnstile secret rejected an invalid token as expected. Configured private credentials were absent from browser-delivered output. No additional email was sent during this audit. The actual Vercel build and real-domain checks remain deployment steps.
+
+### Vercel release — October 26, 2026
+
+Published the verified application from commit `2bcb1ba` to the **Citryn Marketing's projects** team. The production build is Ready and publicly serves [leaningoak.vercel.app](https://leaningoak.vercel.app). [Deployment details](https://vercel.com/citryn-marketings-projects/leaningoak/7jhcjvnqkGjTiB12FhfuoxGCdjEK). All nine production environment variables are configured; the API key and Turnstile secret are stored as secrets. The existing `G-JCNF32VN9M` Analytics ID is configured. All six pages, robots.txt, both sitemaps, and the social image returned HTTP 200 from the public deployment.
+
+Both `www.leaningoakranch.com` and `leaningoakranch.com` are attached to the project. DNS still points to the previous Bluehost server (`162.241.134.16`), so the custom-domain cutover is pending. Vercel currently requests these website records in the existing Bluehost DNS zone:
+
+| Type | Name | Value |
+| --- | --- | --- |
+| A | `@` | `216.150.1.1` |
+| A | `@` | `216.150.16.1` |
+| CNAME | `www` | `3bce086b457bca38.vercel-dns-016.com` |
+
+Replace conflicting website A/CNAME records, while preserving Bluehost nameservers, Google Workspace MX records, and unrelated TXT/mail records. Re-check the current recommended records in [Vercel Domains](https://vercel.com/citryn-marketings-projects/leaningoak/settings/domains) before changing DNS. Turnstile is authorized for the custom domain; the temporary `vercel.app` hostname needs separate widget authorization for successful form submissions. Analytics intentionally remains inactive on the temporary hostname.
+
+GitHub automatic deployments are not connected: Vercel rejected access to `HoughCitryn/leaningoak`, although the source changes were pushed successfully. This release used the Vercel CLI. Once the Vercel GitHub integration has access to that repository, run `pnpm dlx vercel git connect --yes --scope citryn-marketings-projects`. Until then, publish new releases with `pnpm dlx vercel deploy --prod --scope citryn-marketings-projects`.
