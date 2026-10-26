@@ -30,6 +30,9 @@ describe("POST /api/inquiry", () => {
     vi.stubEnv("TURNSTILE_SECRET_KEY", "turnstile-secret");
     vi.stubEnv("RESEND_API_KEY", "resend-key");
     vi.stubEnv("RESEND_FROM_EMAIL", "Leaning Oak Ranch <inquiries@leaningoakranch.com>");
+    vi.stubEnv("SMTP_API", "");
+    vi.stubEnv("SMTP_CHANNEL", "");
+    vi.stubEnv("CONTACT_FROM_EMAIL", "");
     vi.stubEnv("SMTP_HOST", "");
     vi.stubEnv("SMTP_PORT", "587");
     vi.stubEnv("SMTP_SECURE", "false");
@@ -138,5 +141,112 @@ describe("POST /api/inquiry", () => {
     mocks.sendMail.mockResolvedValue({ accepted: [], rejected: ["barbara@leaningoakranch.com"] });
     const response = await POST(new Request("https://www.leaningoakranch.com/api/inquiry/", { method: "POST", body: JSON.stringify(payload) }));
     expect(response.status).toBe(502);
+  });
+
+  function configureSmtpCom() {
+    vi.stubEnv("SMTP_API", "smtpcom-api-key");
+    vi.stubEnv("SMTP_CHANNEL", "ranch-channel");
+    vi.stubEnv("CONTACT_FROM_EMAIL", "contactforms@citryn.com");
+    // API settings must take precedence over leftover SMTP or Resend settings.
+    vi.stubEnv("SMTP_HOST", "smtp.example.com");
+  }
+
+  function inquiryRequest() {
+    return new Request("https://www.leaningoakranch.com/api/inquiry/", {
+      method: "POST", body: JSON.stringify(payload),
+    });
+  }
+
+  it.each([
+    { status: "success", data: { msg_id: "accepted-id" } },
+    { status: "success", data: { message: "accepted, msg_id: 1234-abcd" } },
+  ])("delivers through the SMTP.com API after CAPTCHA verification: %j", async (acceptance) => {
+    configureSmtpCom();
+    const api = vi.fn()
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ success: true }) })
+      .mockResolvedValueOnce({ ok: true, json: async () => acceptance });
+    vi.stubGlobal("fetch", api);
+
+    const response = await POST(inquiryRequest());
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toEqual({ status: "success" });
+    expect(api).toHaveBeenCalledTimes(2);
+    expect(api.mock.calls[0][0]).toBe("https://challenges.cloudflare.com/turnstile/v0/siteverify");
+    expect(api.mock.calls[1][0]).toBe("https://api.smtp.com/v4/messages");
+    const request = api.mock.calls[1][1];
+    expect(request).toMatchObject({
+      method: "POST", redirect: "error",
+      headers: { "X-SMTPCOM-API": "smtpcom-api-key", "Content-Type": "application/json" },
+      signal: expect.any(AbortSignal),
+    });
+    expect(JSON.parse(request.body)).toMatchObject({
+      channel: "ranch-channel",
+      recipients: { to: [{ address: "barbara@leaningoakranch.com" }] },
+      originator: {
+        from: { name: "Leaning Oak Ranch", address: "contactforms@citryn.com" },
+        reply_to: { address: payload.email },
+      },
+      subject: `New ${payload.eventType} inquiry from ${payload.name}`,
+      body: { parts: [{ type: "text/plain", charset: "UTF-8", content: expect.stringContaining(payload.message) }] },
+    });
+    expect(mocks.createTransport).not.toHaveBeenCalled();
+    expect(mocks.send).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    ["SMTP_API", ""], ["SMTP_CHANNEL", ""], ["CONTACT_FROM_EMAIL", ""],
+    ["CONTACT_FROM_EMAIL", "not-an-email"], ["CONTACT_TO_EMAIL", "not-an-email"],
+  ])("rejects incomplete API configuration without falling back: %s=%s", async (key, value) => {
+    configureSmtpCom();
+    vi.stubEnv(key, value);
+    const response = await POST(inquiryRequest());
+    expect(response.status).toBe(502);
+    expect(fetch).toHaveBeenCalledOnce();
+    expect(mocks.createTransport).not.toHaveBeenCalled();
+    expect(mocks.send).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    { status: "fail", data: { message: "accepted, msg_id: id" } },
+    { status: "success", data: { message: "accepted" } },
+    { status: "success", data: { message: "accepted, msg_id: " } },
+    { status: "success", data: { msg_id: " " } },
+    null,
+  ])("does not report API delivery without a valid acceptance ID: %j", async (result) => {
+    configureSmtpCom();
+    vi.stubGlobal("fetch", vi.fn()
+      .mockResolvedValueOnce({ ok: true, json: async () => ({ success: true }) })
+      .mockResolvedValueOnce({ ok: true, json: async () => result }));
+    const response = await POST(inquiryRequest());
+    expect(response.status).toBe(502);
+    await expect(response.json()).resolves.toEqual({ status: "delivery_error" });
+    expect(fetch).toHaveBeenCalledTimes(2);
+    expect(mocks.createTransport).not.toHaveBeenCalled();
+    expect(mocks.send).not.toHaveBeenCalled();
+  });
+
+  it.each(["http", "network", "invalid-json"])("handles API %s failures without retries or leaking provider errors", async (failure) => {
+    configureSmtpCom();
+    const api = vi.fn().mockResolvedValueOnce({ ok: true, json: async () => ({ success: true }) });
+    if (failure === "network") api.mockRejectedValueOnce(new Error("private provider details"));
+    else if (failure === "http") api.mockResolvedValueOnce({ ok: false, status: 403 });
+    else api.mockResolvedValueOnce({ ok: true, json: async () => { throw new SyntaxError("invalid response"); } });
+    vi.stubGlobal("fetch", api);
+    const response = await POST(inquiryRequest());
+    expect(response.status).toBe(502);
+    await expect(response.json()).resolves.toEqual({ status: "delivery_error" });
+    expect(api).toHaveBeenCalledTimes(2);
+    expect(mocks.createTransport).not.toHaveBeenCalled();
+    expect(mocks.send).not.toHaveBeenCalled();
+  });
+
+  it("never calls the SMTP.com API when the spam check fails", async () => {
+    configureSmtpCom();
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ ok: true, json: async () => ({ success: false }) }));
+    const response = await POST(inquiryRequest());
+    expect(response.status).toBe(403);
+    expect(fetch).toHaveBeenCalledOnce();
+    expect(mocks.createTransport).not.toHaveBeenCalled();
+    expect(mocks.send).not.toHaveBeenCalled();
   });
 });

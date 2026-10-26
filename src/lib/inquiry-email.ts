@@ -1,7 +1,24 @@
 import nodemailer from "nodemailer";
 import { Resend } from "resend";
+import { z } from "zod";
 import { siteConfig } from "@/content/site";
 import type { InquiryPayload } from "./inquiry";
+
+const smtpComConfig = z.object({
+  apiKey: z.string().trim().min(1),
+  channel: z.string().trim().min(1),
+  from: z.email(),
+  to: z.email(),
+});
+
+// SMTP.com can return a structured ID or an acceptance message containing it.
+const smtpComAcceptance = z.object({
+  status: z.literal("success"),
+  data: z.union([
+    z.object({ msg_id: z.string().trim().min(1) }),
+    z.object({ message: z.string().regex(/^accepted,\s*msg_id:\s*[a-zA-Z0-9][a-zA-Z0-9._-]*\s*$/i) }),
+  ]),
+});
 
 export async function deliverInquiry(payload: InquiryPayload): Promise<boolean> {
   const message = {
@@ -20,6 +37,43 @@ export async function deliverInquiry(payload: InquiryPayload): Promise<boolean> 
       payload.message,
     ].join("\n"),
   };
+
+  // SMTP_API is an HTTP API key, not an SMTP login password. Prefer the
+  // API/channel configuration used by the existing Trends integration.
+  if (process.env.SMTP_API?.trim() || process.env.SMTP_CHANNEL?.trim()) {
+    const config = smtpComConfig.safeParse({
+      apiKey: process.env.SMTP_API,
+      channel: process.env.SMTP_CHANNEL,
+      from: process.env.CONTACT_FROM_EMAIL?.trim(),
+      to: message.to,
+    });
+    if (!config.success) return false;
+
+    const response = await fetch("https://api.smtp.com/v4/messages", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        "X-SMTPCOM-API": config.data.apiKey,
+      },
+      body: JSON.stringify({
+        channel: config.data.channel,
+        recipients: { to: [{ address: config.data.to }] },
+        originator: {
+          from: { name: siteConfig.name, address: config.data.from },
+          reply_to: { address: message.replyTo },
+        },
+        subject: message.subject,
+        body: { parts: [{ type: "text/plain", charset: "UTF-8", content: message.text }] },
+      }),
+      cache: "no-store",
+      redirect: "error",
+      signal: AbortSignal.timeout(15_000),
+    });
+    if (!response.ok) return false;
+    const result: unknown = await response.json().catch(() => null);
+    return smtpComAcceptance.safeParse(result).success;
+  }
 
   const host = process.env.SMTP_HOST?.trim();
   if (host) {

@@ -19,29 +19,31 @@ The site uses `next/font` to self-host Cardo, Josefin Slab, and Open Sans.
 
 ## Contact form configuration
 
-Copy `.env.example` to `.env.local`, then set your provider's values. Never commit credentials.
+Copy `.env.example` to `.env.local`, then set your provider's values. Never commit credentials. The configured SMTP.com integration uses its HTTP API, matching [the working Trends mailer](https://github.com/citrynmarketingdevelopment/trends-frontend/blob/main/src/features/contact/mail.ts).
 
-- `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, and `SMTP_FROM_EMAIL` configure SMTP delivery.
+- `SMTP_API`, `SMTP_CHANNEL`, and `CONTACT_FROM_EMAIL` configure the SMTP.com HTTP API. The channel is its **Name**, not the SMTP login. The API key is not an SMTP password. This configuration takes precedence over direct SMTP and Resend.
+- `CONTACT_FROM_EMAIL=contactforms@citryn.com` uses the authenticated sender also used by Trends, with **Leaning Oak Ranch** as the display name. Use a Leaning Oak address only after its domain or individual sender has been verified with SMTP.com.
+- `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, and `SMTP_FROM_EMAIL` configure optional direct SMTP delivery when the API/channel settings are blank.
 - Use port `587` with `SMTP_SECURE=false` for required STARTTLS, or port `465` with `SMTP_SECURE=true` for TLS from connection start. See [Nodemailer's SMTP documentation](https://nodemailer.com/smtp).
 - `CONTACT_TO_EMAIL` is the destination mailbox and defaults to `barbara@leaningoakranch.com`. The visitor's address is used as Reply-To; the sender must be authorized by your mail provider.
-- When `SMTP_HOST` is blank, `RESEND_API_KEY` and `RESEND_FROM_EMAIL` enable the existing Resend delivery option. A failed SMTP send is not automatically retried through Resend, to avoid duplicate messages.
+- When both the API/channel settings and `SMTP_HOST` are blank, `RESEND_API_KEY` and `RESEND_FROM_EMAIL` enable the existing Resend delivery option. Incomplete configuration or failed sends do not fall back to another provider, to avoid duplicate messages.
 - Set both `TURNSTILE_SECRET_KEY` and `NEXT_PUBLIC_TURNSTILE_SITE_KEY` for the spam check. Without the public key, the form is disabled and shows phone/email alternatives. Public environment variables must be set before building.
 
-Restart the development server after changing environment variables. Configure the same variables in production before deploying. SMTP needs a Node.js server with outbound access to the provider's port. The contact endpoint cannot run on a static-only host.
+Restart the development server after changing environment variables. Configure the same variables in production before deploying. The SMTP.com API uses HTTPS; direct SMTP needs outbound access to the provider's SMTP port. The contact endpoint requires a Node.js runtime and cannot run on a static-only host.
 
 The Cloudflare **Leaning Oak Ranch** managed widget is configured for `leaningoakranch.com` (including its subdomains). Its real keys are stored only in the ignored `.env.local`. The ignored `.env.development.local` uses Cloudflare's public test keys so local previews work without adding localhost to the production widget. Never copy development test keys into production.
 
-The form refreshes its spam challenge after every submission attempt, retains entered information on failure, and records a lead only after the server confirms delivery. SMTP credentials were intentionally deferred on October 22, 2026; email delivery is not yet verified.
+The form refreshes its spam challenge after every submission attempt, retains entered information on failure, and records a lead only after the provider accepts the inquiry. The SMTP.com API integration requires a successful response containing a message ID; HTTP success alone is insufficient. The visitor is the Reply-To, and only the configured venue recipient receives the inquiry.
 
 Check production configuration before launch:
 
 ```bash
 pnpm check:launch
-# Once SMTP credentials are available, verify TLS and authentication without sending mail:
-pnpm check:launch --smtp
+# Verify API authentication, the active channel, and sender-domain status without sending mail:
+pnpm check:launch --email
 ```
 
-The launch check intentionally fails until an email provider is configured. After that, perform an authorized end-to-end delivery test on the deployed site.
+`--smtp` remains an alias for checking the configured transport. In API mode it does not attempt an SMTP-password login. An authentication check does not prove inbox delivery; perform an authorized end-to-end delivery test before launch. The configured API key, active channel, and enabled `citryn.com` sender domain were verified on October 26, 2026.
 
 ## Google Analytics and Search Console
 
