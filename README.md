@@ -96,6 +96,31 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 ## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Import the repository into Vercel after committing and pushing the latest application changes. Use these settings:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Setting | Value |
+| --- | --- |
+| Framework preset | Next.js |
+| Root directory | `./` |
+| Production branch | `master` |
+| Node.js | `24.x` (also set in `package.json`) |
+| Package manager | `pnpm@10.28.2` (set in `package.json`) |
+| Install command | Leave the Vercel automatic setting enabled |
+| Build command | `pnpm build` |
+| Output directory | Leave the Next.js default |
+| Primary domain | `www.leaningoakranch.com` |
+| Redirect domain | `leaningoakranch.com` → `www.leaningoakranch.com` |
+
+Before the first production build, import the local `.env.vercel.production.local` file into Vercel's **Production** environment variables. This ignored, permission-restricted file contains only the current SMTP.com API settings, recipient, real Turnstile keys, Analytics ID, Search Console verification, and the Corepack setting. It contains secrets and must not be committed. Vercel does not receive ignored local environment files from Git. Regenerate or update the import file if `.env.local` changes later.
+
+The import sets `ENABLE_EXPERIMENTAL_COREPACK=1` so Vercel uses the pinned pnpm version; see [Vercel's Corepack configuration](https://vercel.com/docs/builds/configure-a-build#corepack). [Node.js 24 is supported by Vercel](https://vercel.com/docs/functions/runtimes/node-js/node-js-versions). The inquiry endpoint has a 30-second server execution limit to allow the verification and SMTP.com API requests to finish.
+
+For this project, `CONTACT_TO_EMAIL` is `barbara@leaningoakranch.com`, `CONTACT_FROM_EMAIL` is `contactforms@citryn.com`, and `NEXT_PUBLIC_GA_MEASUREMENT_ID` is `G-JCNF32VN9M`. The canonical origin is already set to `https://www.leaningoakranch.com` in the application. Both the API key and Turnstile secret must remain server-only variables. Public variables are embedded during the build, so changing them requires another deployment.
+
+Preview deployments need their own environment scope configured if you want working forms there. The real widget is authorized for `leaningoakranch.com` and its subdomains, so a generated Vercel URL needs its **exact hostname** added to the Cloudflare widget first; see [Turnstile hostname management](https://developers.cloudflare.com/turnstile/additional-configuration/hostname-management/). Do not import `.env.development.local` into Vercel Production. Analytics deliberately sends no events from preview URLs.
+
+The application redirects the apex domain and HTTP requests to the canonical HTTPS `www` domain. Set Vercel's domain redirect in the same direction to avoid a redirect loop. Preserve the existing mail and Google verification DNS records when connecting the website domains.
+
+After cutover, complete a real Turnstile challenge, verify an authorized inquiry reaches the intended inbox, accept analytics cookies and check GA4 Realtime, and confirm Search Console can fetch `/sitemap.xml` and `/image-sitemap.xml`.
+
+Pre-deployment audit on October 26, 2026 passed from a fresh temporary copy with no existing dependencies or Next.js build output: frozen-lockfile installation, all 52 tests, TypeScript, ESLint without warnings, production build, internal links, 84 archived media files, and the six-page SEO audit. The running production server also passed page/resource, sitemap/image, legacy redirect, canonical host, 404, and inquiry-validation checks; its built inquiry limit is 30 seconds. SMTP.com authentication and sender-domain checks passed; the real Turnstile secret rejected an invalid token as expected. Configured private credentials were absent from browser-delivered output. No additional email was sent during this audit. The actual Vercel build and real-domain checks remain deployment steps.

@@ -28,7 +28,6 @@ export default function OpenGraphImage() {
           <div style={{ marginTop: "22px", fontSize: "34px" }}>Outdoor Weddings &amp; Events</div>
         </div>
         {/* ImageResponse renders image elements itself. */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={`${siteConfig.url}/wp-content/uploads/2017/09/Logo-white-small.png`} width={220} height={240} alt="" />
       </div>
     </div>,

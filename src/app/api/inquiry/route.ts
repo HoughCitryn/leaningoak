@@ -3,6 +3,8 @@ import { processInquiry, type InquiryDependencies } from "@/lib/inquiry";
 import { deliverInquiry } from "@/lib/inquiry-email";
 
 export const runtime = "nodejs";
+// Allow both the 10-second verification and 15-second mail request to finish.
+export const maxDuration = 30;
 
 function createInquiryDependencies(): InquiryDependencies {
   return {
