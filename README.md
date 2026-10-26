@@ -75,7 +75,7 @@ Analytics loads only after the visitor accepts optional cookies, and only on `le
 
 Form contents are never sent to Analytics. Explicit page-view URLs omit query strings and fragments. The public measurement ID and existing Google HTML verification token are included in `.env.example`; retain the domain's existing DNS verification as well.
 
-This is a Next.js rebuild, so Google tags are integrated directly; the WordPress Site Kit plugin is not needed here. The live domain still serves the earlier WordPress site until this repository is deployed. Verify consented page views and `generate_lead` in GA4 Realtime after deployment and the delivery test.
+This is a Next.js rebuild, so Google tags are integrated directly; the WordPress Site Kit plugin is not needed here. The Vercel release and domain cutover are recorded below. Verify consented page views and `generate_lead` in GA4 Realtime after DNS propagation and a production delivery test.
 
 ## SEO and verification
 
@@ -129,14 +129,17 @@ Pre-deployment audit on October 26, 2026 passed from a fresh temporary copy with
 
 Published the verified application from commit `2bcb1ba` to the **Citryn Marketing's projects** team. The production build is Ready and publicly serves [leaningoak.vercel.app](https://leaningoak.vercel.app). [Deployment details](https://vercel.com/citryn-marketings-projects/leaningoak/7jhcjvnqkGjTiB12FhfuoxGCdjEK). All nine production environment variables are configured; the API key and Turnstile secret are stored as secrets. The existing `G-JCNF32VN9M` Analytics ID is configured. All six pages, robots.txt, both sitemaps, and the social image returned HTTP 200 from the public deployment.
 
-Both `www.leaningoakranch.com` and `leaningoakranch.com` are attached to the project. DNS still points to the previous Bluehost server (`162.241.134.16`), so the custom-domain cutover is pending. Vercel currently requests these website records in the existing Bluehost DNS zone:
+Both `www.leaningoakranch.com` and `leaningoakranch.com` are attached to the project. The website records were updated in Bluehost on October 26, 2026, and Vercel verified both hostnames as configured correctly:
 
 | Type | Name | Value |
 | --- | --- | --- |
 | A | `@` | `216.150.1.1` |
 | A | `@` | `216.150.16.1` |
-| CNAME | `www` | `3bce086b457bca38.vercel-dns-016.com` |
+| A | `www` | `216.150.1.1` |
+| A | `www` | `216.150.16.1` |
 
-Replace conflicting website A/CNAME records, while preserving Bluehost nameservers, Google Workspace MX records, and unrelated TXT/mail records. Re-check the current recommended records in [Vercel Domains](https://vercel.com/citryn-marketings-projects/leaningoak/settings/domains) before changing DNS. Turnstile is authorized for the custom domain; the temporary `vercel.app` hostname needs separate widget authorization for successful form submissions. Analytics intentionally remains inactive on the temporary hostname.
+Bluehost blocked converting the existing `www` A record directly to a CNAME. Both hostnames therefore use Vercel's supported IPv4 addresses, which Vercel verified successfully. The old website address (`162.241.134.16`) was replaced. Bluehost nameservers, Google Workspace MX records, apex TXT records, and the mail host were checked against the saved pre-cutover DNS records and remain unchanged. An automatically renewing certificate covers both hostnames. Requests to Vercel using the real domain and normal TLS validation passed: HTTP/apex redirect to `https://www.leaningoakranch.com/`, home and contact pages, robots.txt, sitemap.xml, and image-sitemap.xml return 200, and the inquiry API rejects empty submissions with 400. No additional email was sent. DNS caches still returned the old server during the final check; allow the previous four-hour TTL to expire before judging propagation from a particular connection.
+
+Turnstile is authorized for the custom domain; a successful browser challenge and full production email submission have not been re-tested during this DNS cutover. The temporary `vercel.app` hostname needs separate widget authorization for successful form submissions. Analytics intentionally remains inactive on the temporary hostname; live GA4 Realtime confirmation and the separate image sitemap submission remain follow-up checks after propagation. Current domain status is available in [Vercel Domains](https://vercel.com/citryn-marketings-projects/leaningoak/settings/domains).
 
 GitHub automatic deployments are not connected: Vercel rejected access to `HoughCitryn/leaningoak`, although the source changes were pushed successfully. This release used the Vercel CLI. Once the Vercel GitHub integration has access to that repository, run `pnpm dlx vercel git connect --yes --scope citryn-marketings-projects`. Until then, publish new releases with `pnpm dlx vercel deploy --prod --scope citryn-marketings-projects`.
