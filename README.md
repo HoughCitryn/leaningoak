@@ -4,16 +4,11 @@ Next.js website for Leaning Oak Ranch in Bakersfield, California.
 
 ## Getting Started
 
-First, run the development server:
+Use Node.js 24 (`nvm use` reads `.nvmrc`), install dependencies, and run the development server:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install --frozen-lockfile
 pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -34,11 +29,57 @@ Copy `.env.example` to `.env.local`, then set your provider's values. Never comm
 
 Restart the development server after changing environment variables. Configure the same variables in production before deploying. SMTP needs a Node.js server with outbound access to the provider's port. The contact endpoint cannot run on a static-only host.
 
+The Cloudflare **Leaning Oak Ranch** managed widget is configured for `leaningoakranch.com` (including its subdomains). Its real keys are stored only in the ignored `.env.local`. The ignored `.env.development.local` uses Cloudflare's public test keys so local previews work without adding localhost to the production widget. Never copy development test keys into production.
+
+The form refreshes its spam challenge after every submission attempt, retains entered information on failure, and records a lead only after the server confirms delivery. SMTP credentials were intentionally deferred on October 22, 2026; email delivery is not yet verified.
+
+Check production configuration before launch:
+
+```bash
+pnpm check:launch
+# Once SMTP credentials are available, verify TLS and authentication without sending mail:
+pnpm check:launch --smtp
+```
+
+The launch check intentionally fails until an email provider is configured. After that, perform an authorized end-to-end delivery test on the deployed site.
+
+## Google Analytics and Search Console
+
+The rebuild reuses the existing **Leaning Oak Ranch – GA4** property. No new Analytics account or property was created.
+
+| Setting | Value |
+| --- | --- |
+| Analytics account | `106954060` |
+| GA4 property | `382986588` |
+| Web stream | `5387010175` |
+| Measurement ID | `G-JCNF32VN9M` |
+| Search Console property | `sc-domain:leaningoakranch.com` |
+
+On October 22, 2026, the Search Console domain property was linked to the existing web stream. `generate_lead` was configured as a GA4 key event, counted once per event with no default monetary value. Manage the [Search Console link in Analytics](https://analytics.google.com/analytics/web/#/a106954060p382986588/admin/integrations/search-console) or open [Search Console sitemaps](https://search.google.com/search-console/sitemaps?resource_id=sc-domain%3Aleaningoakranch.com).
+
+Analytics loads only after the visitor accepts optional cookies, and only on `leaningoakranch.com` or `www.leaningoakranch.com`. Local and preview hosts do not send analytics. Visitors can reopen Cookie preferences and withdraw consent. Page views are tracked on initial consent and Next.js navigation; keep the stream's automatic browser-history page-view tracking **off** to avoid duplicates. That setting was verified off during setup. Other automatic enhanced-measurement events are also off.
+
+| Event | Trigger |
+| --- | --- |
+| `page_view` | Initial consented view and page navigation |
+| `generate_lead` | Confirmed successful inquiry delivery |
+| `schedule_tour` | Tour link click |
+| `click_to_call` | Phone link click |
+| `click_email` | Email link click |
+| `view_packages` | Package link click |
+| `gallery_open` | Gallery image opened |
+
+Form contents are never sent to Analytics. Explicit page-view URLs omit query strings and fragments. The public measurement ID and existing Google HTML verification token are included in `.env.example`; retain the domain's existing DNS verification as well.
+
+This is a Next.js rebuild, so Google tags are integrated directly; the WordPress Site Kit plugin is not needed here. The live domain still serves the earlier WordPress site until this repository is deployed. Verify consented page views and `generate_lead` in GA4 Realtime after deployment and the delivery test.
+
 ## SEO and verification
 
 Page titles, descriptions, and canonical URLs are defined in `src/content/site.ts`. The sitemap uses the same page inventory. Next.js serves `src/app/sitemap.ts` at `/sitemap.xml` and `src/app/robots.ts` at `/robots.txt`; physical files in `public` are not needed. `/image-sitemap.xml` lists the venue photographs.
 
-Run `pnpm verify` for lint, types, inquiry tests, the production build, and asset/SEO checks. Read `SITE_AUDIT.txt` for the live-site comparison and remaining differences.
+Run `pnpm verify` for lint, types, form/analytics tests, the production build, and asset/SEO checks. Read `SITE_AUDIT.txt` for the earlier live-site comparison and remaining differences.
+
+Both the stable `/sitemap.xml` URL and the currently live WordPress `/sitemap_index.xml` URL were submitted to Search Console on October 22, 2026, and both were verified with **Success** status. This confirms fetching, not completion of indexing. The rebuild redirects the old sitemap index to `/sitemap.xml`. After deployment, confirm Google can fetch the new sitemap and submit `/image-sitemap.xml`, which is not present on the current WordPress site.
 
 ## Learn More
 

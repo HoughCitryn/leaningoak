@@ -7,11 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
     "check:links": "node scripts/check-links.mjs",
     "check:seo": "node scripts/check-seo.mjs",
-    "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm check:links && pnpm check:seo"
+    "verify": "pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm check:links && pnpm check:seo",
+    "check:launch": "node scripts/check-launch.mjs"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
@@ -23,6 +24,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@next/env": "16.3.1",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^7.0.1",
     "@testing-library/react": "^16.3.2",
@@ -38,5 +40,8 @@
     "typescript": "^5",
     "vitest": "^4.1.11"
   },
-  "packageManager": "pnpm@10.28.2"
+  "packageManager": "pnpm@10.28.2",
+  "engines": {
+    "node": "^22.13.0 || >=24.0.0"
+  }
 }

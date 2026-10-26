@@ -280,3 +280,13 @@ p { margin: 0 0 1.25rem; }
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
   .parallax-section, .page-hero { background-attachment: scroll; }
 }
+.cookie-preferences {
+  display: block;
+  margin: 1rem auto;
+  padding: .5rem 1rem;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}

@@ -25,7 +25,7 @@ export const inquirySchema = z.object({
       "Guest count must be between 1 and 150.",
     ),
   message: z.string().trim().min(10, "Please tell us a little about your event.").max(5000),
-  turnstileToken: z.string().trim().min(1, "Please complete the security check."),
+  turnstileToken: z.string().trim().min(1, "Please complete the security check.").max(2048),
   website: optionalText,
 });
 
